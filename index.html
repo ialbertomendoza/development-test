@@ -15,20 +15,20 @@
 			<div class="col l8 m8 s12">
 				<div class="row">
 			        <div class="input-field col s6">
-			          <input id="clientes" type="number" class="validate">
-			          <label for="clientes">Clientes</label>
+			          <input id="input-customers" type="number" min="1" max="999">
+			          <label for="input-customers">Clientes</label>
 			        </div>
 			        <div class="input-field col s6">
-			          <input id="parkers" type="number" class="validate">
-			          <label for="parkers">Parkers</label>
+			          <input id="input-parkers" type="number" min="1" max="999">
+			          <label for="input-parkers">Parkers</label>
 			        </div>
 			    </div>
 			</div>
 			<div class="col l4 m4 s12">
 				<div id="section-controls-buttons" class="row">
-					<a href="#!" class="btn"><i class="tiny material-icons">play_arrow</i></a>
-					<a href="#!" class="btn"><i class="tiny material-icons">pause</i></a>
-					<a href="#!" class="btn"><i class="tiny material-icons">stop</i></a>
+					<a id="simulator-start" href="#!" class="btn"><i class="tiny material-icons">play_arrow</i></a>
+					<a id="simulator-pause" href="#!" class="btn control disabled"><i class="tiny material-icons">pause</i></a>
+					<a id="simulator-stop" href="#!" class="btn control disabled"><i class="tiny material-icons">stop</i></a>
 				</div>
 			</div>
 		</div>
@@ -38,6 +38,7 @@
 	<script src="https://code.jquery.com/jquery-2.2.3.min.js" integrity="sha256-a23g1Nt4dtEYOj7bR+vTu7+T8VP13humZFBJNIYoEJo=" crossorigin="anonymous"></script>
 	<script src="assets/js/materialize.min.js"></script>
 	<script src="assets/js/GMapsAPI.js"></script>
+	<script src="assets/js/jQueryMethods.js"></script>
 	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBEh3SBLrXyY1SvwVecwvFwFtkb5lOd7cA&callback=loadMap"> </script>
 </body>
 </html>
