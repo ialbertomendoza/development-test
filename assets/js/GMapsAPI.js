@@ -1,7 +1,11 @@
 var map;
 var markers = new Array(0);
 var oaxaca = {lat: 17.063030, lng: -96.723778};
+var parkersData, customersData = new Array(0);
 
+/**
+ * Draw map on app
+ */
 function loadMap() {
   	map = new google.maps.Map(document.getElementById('section-map'), {
   		center: oaxaca,
@@ -16,6 +20,12 @@ function loadMap() {
 	});
 }
 
+/**
+ * Establish the type marker and number for generator
+ * @param  {string} typeMarker Type of marker, can be only "parker" or "customer"
+ * @param  {integer} quantity Number of markers to generate
+ * @return {boolean} [false] Only when not have parameters
+ */
 function markerGenerator(typeMarker, quantity){
 	if (typeMarker && quantity) {
 		switch (typeMarker) {
@@ -33,6 +43,11 @@ function markerGenerator(typeMarker, quantity){
 	}
 }
 
+/**
+ * Make random marker in bounds of map that the user can see
+ * @param  {intenger} quantity Number of markers to generate
+ * @param  {string} typeMarker For create array with distinct data and then calculate distances
+ */
 function makeRandomMarkers(quantity, typeMarker) {
     bounds = map.getBounds();
     var southWest = bounds.getSouthWest();
@@ -55,11 +70,21 @@ function makeRandomMarkers(quantity, typeMarker) {
         markersRecord.push(markerInfo);
         randomMarkers.push(newMarker);
     }
-    console.log(markersRecord);
+
+    if (typeMarker === "parker") {
+    	parkersData = markersRecord;
+    } else if (typeMarker === "customer") {
+    	customersData = markersRecord;
+    }
 
     setMap(randomMarkers, typeMarker);
 }
 
+/**
+ * Set on map all the markers 
+ * @param {array} arrayMarkers Array with coordinates
+ * @param {type} typeMarker For establish the icon 
+ */
 function setMap(arrayMarkers, typeMarker){
 	for( var i = 0; i < arrayMarkers.length; ++i ) {
         var title = i + " : " + arrayMarkers[i];
@@ -69,6 +94,13 @@ function setMap(arrayMarkers, typeMarker){
     }
 }
 
+/**
+ * Set attributes for each marker
+ * @param  {object} coordinates Coordinates for set on the map
+ * @param  {string} title Title for the marker
+ * @param  {string} typeMarker Establish the icon 
+ * @return {object} Object type marker with all properties for set on map
+ */
 function configMarker(coordinates,title, typeMarker) {
 	var icon = (typeMarker === "parker") ? "assets/images/parker.png" : "assets/images/customer.png";
     var marker = new google.maps.Marker({
@@ -80,6 +112,9 @@ function configMarker(coordinates,title, typeMarker) {
     return marker;
 }
 
+/**
+ * Reset the data in markers
+ */
 function resetMarkers(){
 	if (markers) {
         for (i in markers) {
