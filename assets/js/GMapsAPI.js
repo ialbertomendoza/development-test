@@ -1,7 +1,7 @@
 var map;
 var markers = new Array(0);
 var oaxaca = {lat: 17.063030, lng: -96.723778};
-var parkersData, customersData = new Array(0);
+var parkersData, customersData, parkersAsigned = new Array(0);
 
 /**
  * Draw map on app
@@ -63,7 +63,6 @@ function makeRandomMarkers(quantity, typeMarker) {
     	newLon = southWest.lng() + lon * Math.random();
         var newMarker = new google.maps.LatLng(newLat,newLon);
         markerInfo = {
-        	'status': 'waiting',
         	'lat_start': newLat,
         	'lon_start': newLon
         };
@@ -114,11 +113,9 @@ function configMarker(coordinates,title, typeMarker) {
 
 /**
  * Calculates the number of requests
- * @param  {array} parkersData Array with the parkers data
- * @param  {array} customersData Array with the customers data
  * @todo Segment data not to exceed the limit of requests
  */
-function calcAmount(parkersData, customersData){
+function calcAmount(){
 	var origin = [];
 	var destinations = [];
 	if (parkersData && parkersData.length > 0 && customersData && customersData.length > 0) {
@@ -128,7 +125,7 @@ function calcAmount(parkersData, customersData){
 			customersData.forEach(function(customer) {
 				destinations.push(customer.lat_start+","+customer.lon_start);
 			});
-			setTimeout(calcDistance(origin,destinations), 3000);
+			calcDistance(origin,destinations);
 		});
 	} else {
 		Materialize.toast('¡No hay suficientes datos!', 3000);
@@ -155,15 +152,18 @@ function calcDistance(origin, destinations){
         if (status !== google.maps.DistanceMatrixStatus.OK) {
             console.log('Error:', status);
         } else {
-            //var results = distances.rows[0].elements;
-            console.log("Original");
-            debugDistances(distances.rows[0].elements);
+            distancesStarted = debugDistances(distances.rows[0].elements);
             var customers = distances.rows[0].elements.slice(0);
             customers.sort(function(a, b){
             	return a.distance.value-b.distance.value;
-        	})
-            console.log("Ordenado");
-            debugDistances(customers);
+        	});
+            customerAsigned = distancesStarted.indexOf(customers[0].distance.value);
+            removedCustomer = customersData.splice(customerAsigned,1);
+            parkersAsigned.push({
+            	"parker": origin,
+            	"customer": removedCustomer,
+            	"status": "asigned"
+            });
         }
     });
 }
@@ -178,6 +178,7 @@ function debugDistances(distancesObject){
 		list.push(customer.distance.value);
 	});
 	console.log(list);
+	return list;
 }
 
 /**
