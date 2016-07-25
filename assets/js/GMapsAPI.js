@@ -113,6 +113,55 @@ function configMarker(coordinates,title, typeMarker) {
 }
 
 /**
+ * Calculates the number of requests
+ * @param  {array} parkersData Array with the parkers data
+ * @param  {array} customersData Array with the customers data
+ * @todo Segment data not to exceed the limit of requests
+ */
+function calcAmount(parkersData, customersData){
+	var origin = [];
+	var destinations = [];
+	if (parkersData && parkersData.length > 0 && customersData && customersData.length > 0) {
+		parkersData.forEach(function(parker) {
+			origin = [parker.lat_start+","+parker.lon_start];
+			destinations = [];
+			customersData.forEach(function(customer) {
+				destinations.push(customer.lat_start+","+customer.lon_start);
+			});
+			setTimeout(calcDistance(origin,destinations), 3000);
+		});
+	} else {
+		Materialize.toast('¡No hay suficientes datos!', 3000);
+	}
+}
+
+/**
+ * Calculates the distanche from each parker to customer
+ * @param  {array} origin Array with the parker coordinates
+ * @param  {array} destinations Array with many customers coordinates
+ */
+function calcDistance(origin, destinations){
+	var distanceService = new google.maps.DistanceMatrixService();
+	distanceService.getDistanceMatrix({
+        origins: origin,
+        destinations: destinations,
+        travelMode: google.maps.TravelMode.WALKING,
+        unitSystem: google.maps.UnitSystem.METRIC,
+        durationInTraffic: true,
+        avoidHighways: false,
+        avoidTolls: false
+    },
+    function (distances, status) {
+        if (status !== google.maps.DistanceMatrixStatus.OK) {
+            console.log('Error:', status);
+        } else {
+            console.log(distances);
+            var results = distances.rows[0].elements;
+        }
+    });
+}
+
+/**
  * Reset the data in markers
  */
 function resetMarkers(){
