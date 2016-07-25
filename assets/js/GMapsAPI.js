@@ -155,10 +155,29 @@ function calcDistance(origin, destinations){
         if (status !== google.maps.DistanceMatrixStatus.OK) {
             console.log('Error:', status);
         } else {
-            console.log(distances);
-            var results = distances.rows[0].elements;
+            //var results = distances.rows[0].elements;
+            console.log("Original");
+            debugDistances(distances.rows[0].elements);
+            var customers = distances.rows[0].elements.slice(0);
+            customers.sort(function(a, b){
+            	return a.distance.value-b.distance.value;
+        	})
+            console.log("Ordenado");
+            debugDistances(customers);
         }
     });
+}
+
+/**
+ * List distances in ascending order
+ * @param  {object} distancesObject 
+ */
+function debugDistances(distancesObject){
+	var list = [];
+	distancesObject.forEach(function(customer){
+		list.push(customer.distance.value);
+	});
+	console.log(list);
 }
 
 /**

@@ -19,5 +19,10 @@ $("#simulator-pause").on("click", function(){
 $("#simulator-stop").on("click", function(){
 	$("#simulator-start").removeClass("disabled");
 	$(".control").addClass("disabled");
+	$("#input-customers").val("");
+	$("#input-parkers").val("");
+	parkersData = new Array(0);
+	customerData = new Array(0);
+	markers = new Array(0);
 });
 
