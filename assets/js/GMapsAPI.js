@@ -66,6 +66,7 @@ function makeRandomMarkers(quantity, typeMarker) {
         	'lat_start': newLat,
         	'lon_start': newLon
         };
+        if (typeMarker === "parker") markerInfo.status = "waiting";
         markersRecord.push(markerInfo);
         randomMarkers.push(newMarker);
     }
@@ -152,20 +153,43 @@ function calcDistance(origin, destinations){
         if (status !== google.maps.DistanceMatrixStatus.OK) {
             console.log('Error:', status);
         } else {
-            distancesStarted = debugDistances(distances.rows[0].elements);
-            var customers = distances.rows[0].elements.slice(0);
-            customers.sort(function(a, b){
+            distancesCalculated = debugDistances(distances.rows[0].elements);
+            var individualDistance = distances.rows[0].elements.slice(0);
+            individualDistance.sort(function(a, b){
             	return a.distance.value-b.distance.value;
         	});
-            customerAsigned = distancesStarted.indexOf(customers[0].distance.value);
+            customerAsigned = distancesCalculated.indexOf(individualDistance[0].distance.value);
             removedCustomer = customersData.splice(customerAsigned,1);
+            console.log(removedCustomer);
             parkersAsigned.push({
-            	"parker": origin,
-            	"customer": removedCustomer,
+            	//"parker": origin,
+            	//"customer": removedCustomer[0],
+            	"route": [origin[0], removedCustomer[0].lat_start+","+removedCustomer[0].lon_start],
             	"status": "asigned"
             });
+            displayRoute(origin[0],removedCustomer[0].lat_start+","+removedCustomer[0].lon_start);
         }
     });
+}
+
+function displayRoute(origin, destination){
+	var directionsService = new google.maps.DirectionsService;
+	var directionsDisplay = new google.maps.DirectionsRenderer;
+	directionsDisplay.setMap(map);
+	directionsService.route({
+		origin: origin,
+		destination: destination,
+		transitOptions: {
+			routingPreference: google.maps.TransitRoutePreference.LESS_WALKING
+		},
+		travelMode: google.maps.TravelMode.WALKING
+	}, function(response, status) {
+		if (status === google.maps.DirectionsStatus.OK) {
+			directionsDisplay.setDirections(response);
+		} else {
+			console.log('Directions request failed due to ' + status);
+		}
+	});
 }
 
 /**

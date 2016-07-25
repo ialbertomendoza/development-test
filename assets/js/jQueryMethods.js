@@ -27,6 +27,6 @@ $("#simulator-stop").on("click", function(){
 	$("#input-parkers").val("");
 	parkersData = new Array(0);
 	customerData = new Array(0);
-	markers = new Array(0);
+	parkersAsigned = new Array(0);
 });
 
