@@ -66,7 +66,7 @@ function makeRandomMarkers(quantity, typeMarker) {
         	'lat_start': newLat,
         	'lon_start': newLon
         };
-        if (typeMarker === "parker") markerInfo.status = "waiting";
+        if (typeMarker === "customer") markerInfo.status = "waiting";
         markersRecord.push(markerInfo);
         randomMarkers.push(newMarker);
     }
@@ -124,7 +124,8 @@ function calcAmount(){
 			origin = [parker.lat_start+","+parker.lon_start];
 			destinations = [];
 			customersData.forEach(function(customer) {
-				destinations.push(customer.lat_start+","+customer.lon_start);
+                if (customer.status === "waiting")
+				    destinations.push(customer.lat_start+","+customer.lon_start);
 			});
 			calcDistance(origin,destinations);
 		});
@@ -159,15 +160,16 @@ function calcDistance(origin, destinations){
             	return a.distance.value-b.distance.value;
         	});
             customerAsigned = distancesCalculated.indexOf(individualDistance[0].distance.value);
-            removedCustomer = customersData.splice(customerAsigned,1);
-            console.log(removedCustomer);
+            customersData[customerAsigned].status = "asigned";
+            customerSelected = customersData.splice(customerAsigned,1);
+            
             parkersAsigned.push({
             	//"parker": origin,
             	//"customer": removedCustomer[0],
-            	"route": [origin[0], removedCustomer[0].lat_start+","+removedCustomer[0].lon_start],
+            	"route": [origin[0], customerSelected[0].lat_start+","+customerSelected[0].lon_start],
             	"status": "asigned"
             });
-            displayRoute(origin[0],removedCustomer[0].lat_start+","+removedCustomer[0].lon_start);
+            displayRoute(origin[0],customerSelected[0].lat_start+","+customerSelected[0].lon_start);
         }
     });
 }

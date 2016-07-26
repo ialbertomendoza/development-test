@@ -3,16 +3,20 @@ $(document).ready(function(){
 });
 
 $("#simulator-start").on("click", function(){
-	resetMarkers();
-	var parkers = $("#input-parkers").val();
-	var customers = $("#input-customers").val();
-	if (parkers && parkers > 0 && customers && customers > 0) {
-		markerGenerator("parker", parkers);
-		markerGenerator("customer", customers);
-		$(this).addClass("disabled");
-		$(".control").removeClass("disabled");
+	if ($(this).hasClass("disabled")){
+		Materialize.toast('¡Ejecución en curso!', 2000);
 	} else {
-		Materialize.toast('¡No hay datos para realizar la prueba!', 2000);
+		var parkers = $("#input-parkers").val();
+		var customers = $("#input-customers").val();
+		if (parkers && parkers > 0 && customers && customers > 0) {
+			markerGenerator("parker", parkers);
+			markerGenerator("customer", customers);
+			$(this).addClass("disabled");
+			$(".control").removeClass("disabled");
+			calcAmount();
+		} else {
+			Materialize.toast('¡No hay datos para realizar la prueba!', 2000);
+		}
 	}
 });
 
@@ -26,7 +30,8 @@ $("#simulator-stop").on("click", function(){
 	$("#input-customers").val("");
 	$("#input-parkers").val("");
 	parkersData = new Array(0);
-	customerData = new Array(0);
+	customersData = new Array(0);
 	parkersAsigned = new Array(0);
+	resetMarkers();
 });
 
